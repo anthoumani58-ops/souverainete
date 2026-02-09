@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CrisisStatus {
+  ACTIVE
+  RESOLVED
+}
+
+enum MonetizationStatus {
+  LOCKED
+  UNLOCKED
+}
+
+enum GameType {
+  GO
+}
+
+model User {
+  id            String           @id @default(cuid())
+  name          String?
+  email         String?          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  journal       JournalEntry[]
+  codeGoals     CodeGoal[]
+  codeSessions  CodeSession[]
+  gameSessions  GameSession[]
+  dailyGates    LifeGateDaily[]
+  weeklyGates   LifeGateWeekly[]
+  crisisGates   LifeGateCrisis[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  displayName String?
+  bio         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LifeGateDaily {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  prayer    Boolean  @default(false)
+  health    Boolean  @default(false)
+  finance   Boolean  @default(false)
+  code      Boolean  @default(false)
+  relation  Boolean  @default(false)
+  completedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model LifeGateWeekly {
+  id         String   @id @default(cuid())
+  userId     String
+  weekStart  DateTime
+  budgetReview Boolean @default(false)
+  goalsReview  Boolean @default(false)
+  progressReview Boolean @default(false)
+  completedAt DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStart])
+}
+
+model LifeGateCrisis {
+  id        String       @id @default(cuid())
+  userId    String
+  startedAt DateTime     @default(now())
+  endsAt    DateTime
+  reason    String
+  status    CrisisStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @default(now())
+  content   String
+  tags      String[]
+  mood      String?
+  stress    Int?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CodeGoal {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  targetDate DateTime?
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CodeSession {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  minutes   Int
+  commits   Int
+  notes     String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GameSession {
+  id        String   @id @default(cuid())
+  userId    String
+  game      GameType @default(GO)
+  rankBefore String?
+  rankAfter  String?
+  result    String?
+  notes     String?
+  replayUrl String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model MonetizationItem {
+  id        String             @id @default(cuid())
+  title     String
+  type      String
+  priceCents Int
+  currency  String             @default("EUR")
+  status    MonetizationStatus @default(LOCKED)
+  requiresDaily Boolean        @default(true)
+  requiresWeekly Boolean       @default(true)
+  qualityGate String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+}
+
+model ArsenalEntity {
+  id        String   @id @default(cuid())
+  kind      String
+  name      String
+  purpose   String
+  checklist String[]
+  script    String
+  message   String
+  createdAt DateTime @default(now())
+}

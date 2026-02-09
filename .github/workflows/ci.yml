@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
+        env:
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
+          NEXTAUTH_SECRET: "ci-secret"
+          GITHUB_ID: "ci"
+          GITHUB_SECRET: "ci"
+          EMAIL_SERVER: "smtp://user:pass@smtp.example.com:587"
+          EMAIL_FROM: "ci@example.com"
+          STRIPE_SECRET_KEY: "sk_test_ci"
+          APP_URL: "http://localhost:3000"

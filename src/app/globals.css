@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-sand text-ink antialiased;
+  background-image: radial-gradient(circle at top left, rgba(224, 75, 26, 0.15), transparent 45%),
+    radial-gradient(circle at 20% 80%, rgba(29, 91, 79, 0.18), transparent 50%),
+    linear-gradient(120deg, rgba(124, 198, 214, 0.1), transparent 55%);
+}
+
+.section-frame {
+  @apply border border-ink/10 bg-white/80 backdrop-blur-sm shadow-glow rounded-2xl;
+}
+
+.tag {
+  @apply inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white px-3 py-1 text-xs uppercase tracking-[0.2em];
+}
