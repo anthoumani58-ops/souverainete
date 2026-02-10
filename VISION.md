@@ -240,7 +240,6 @@
 | **CI/CD** | GitHub Actions | Tests auto, lint, deploy. |
 | **Observabilité** | Sentry (optionnel) | Monitoring erreurs, performance. |
 | **Tests** | Vitest (unit) + Playwright (E2E) | Rapides, modernes, intégration Next.js. |
-| **SGF Parsing** | @sabaki/sgf (npm package) | Parser SGF standard pour Go. |
 | **Email** | Resend ou SendGrid | Transactionnel, templates. |
 
 ---

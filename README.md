@@ -12,6 +12,10 @@ Site web complet (MVP puis V1) pour Anthoumani MADI (nom de naissance MOUSSA), f
 ## Objectif
 Stabiliser la vie et la clarte mentale, progresser en code, jouer un jeu choisi, transformer la progression en revenus legaux, tracables, et ethiques.
 
+## Fondation ethique
+Foundational Ethic.
+This platform rejects manipulation, coercion, exploitation, and any practice that diminishes personal autonomy or human dignity.
+
 ## Documents clefs
 - Vision & garde-fous: [VISION.md](VISION.md)
 - Architecture: [docs/architecture.md](docs/architecture.md)

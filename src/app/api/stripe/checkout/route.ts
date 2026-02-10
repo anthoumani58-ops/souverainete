@@ -1,15 +1,15 @@
 import { auth } from "@/lib/auth";
-import { getSampleGateStatus, isMonetizationLocked } from "@/lib/gates";
+import { getGateStatusForUser, isMonetizationLocked } from "@/lib/gates";
 import { stripe } from "@/lib/stripe";
 
 export async function POST(request: Request) {
   const session = await auth();
 
-  if (!session) {
+  if (!session?.user?.id) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const gateStatus = getSampleGateStatus();
+  const gateStatus = await getGateStatusForUser(session.user.id);
   if (isMonetizationLocked(gateStatus)) {
     return new Response("Gate locked", { status: 403 });
   }

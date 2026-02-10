@@ -1,9 +1,21 @@
 import LockedBanner from "@/components/LockedBanner";
-import { getSampleGateStatus, isMonetizationLocked } from "@/lib/gates";
+import { auth } from "@/lib/auth";
+import { getGateStatusForUser, isMonetizationLocked } from "@/lib/gates";
 import { monetizationPaths } from "@/lib/monetization";
 
-export default function MonetizationPage() {
-  const gateStatus = getSampleGateStatus();
+export default async function MonetizationPage() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return (
+      <div className="section-frame p-6">
+        <p className="text-sm text-ink/70">Connexion requise.</p>
+      </div>
+    );
+  }
+
+  const gateStatus = await getGateStatusForUser(userId);
   const locked = isMonetizationLocked(gateStatus);
 
   return (
